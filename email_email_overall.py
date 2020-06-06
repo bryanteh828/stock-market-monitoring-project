@@ -33,7 +33,7 @@ table1['rsi14'] = table1['rsi14'].apply(lambda x: int(x))
 table1['trend_mean'] = table1['trend_mean'].apply(lambda x: str(round(x,2))+'%')
 table1['Close_200ma'] = table1['Close_200ma'].apply(lambda x: str(round(100*x,1))+'%')
 table1 = table1.sort_values(['rsi14'],ascending=True)
-table1 = table1.head(35)
+table1 = table1.head(int(len(table1)/2+1))
 
 # 4 - filter datatable and convert to html datatable format
 
@@ -104,7 +104,7 @@ table1['rsi14'] = table1['rsi14'].apply(lambda x: int(x))
 table1['trend_mean'] = table1['trend_mean'].apply(lambda x: str(round(x,2))+'%')
 table1['Close_200ma'] = table1['Close_200ma'].apply(lambda x: str(round(100*x,1))+'%')
 table1 = table1.sort_values(['rsi14'],ascending=False)
-table1 = table1.head(35)
+table1 = table1.head(int(len(table1)/2+1))
 
 header = ['Industry','Ticker','Price','5yr Trend','Current Trend','RSI20','Trend STD','RSI STD']
 header_string = '<tr> '
@@ -158,7 +158,7 @@ table1 = table1.sort_values(['trend_mean'],ascending=False)
 table1['Close'] = table1['Close'].apply(lambda x: str(int(x)) if x >= 100 else str(round(x,1)) if x > 8 else str(round(x,2)))
 table1['trend_sd'] = table1['trend_sd'].apply(lambda x: round(x,1))
 table1['rsi_sd'] = table1['rsi_sd'].apply(lambda x: round(x,1))
-table1 = table1.head(35)
+table1 = table1.head(int(len(table1)/2+1))
 # table1['gap'] = -df['trend_mean'] + 100*df['Close_200ma']
 # table1['gap'] = table1['gap'].apply(lambda x: str(round(x,1))+'%')
 table1['rsi14'] = table1['rsi14'].apply(lambda x: int(x))
@@ -285,8 +285,8 @@ html += """</table></table></body></html>"""
 
 # 10 - furnish the text/html of email
 
-length = 35
-for i in range(int(1.5*(length))):
+length = int(len(table1)/2+1)
+for i in range(int(1.9*(length))):
     text = MIMEText('\n')
     message.attach(text)
 

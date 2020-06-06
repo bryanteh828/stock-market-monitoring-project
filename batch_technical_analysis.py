@@ -27,10 +27,6 @@ if not isMac:
     try:os.system(r'C:\Users\USER\Anaconda3\python.exe email_clearing.py')
     except: sys.exit('Script error')
 
-
-
-
-
     tickers = df.ticker.unique()
     for ticker in tickers:
         try: os.system(r'C:\Users\USER\Anaconda3\python.exe email_extract.py'+' '+ticker)

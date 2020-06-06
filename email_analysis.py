@@ -103,6 +103,7 @@ df['ma_50'], df['ma_200'],e,w,q= macd(df['Close'],short_period, long_period, exp
 short_period, long_period, exp_period = 12, 26, 9
 df['ma_short'], df['ma_long'], df['ma_longshort'],df['macd'], df['crossovers'] = macd(df['Close'],short_period, long_period, exp_period)
 
+df.to_csv(ticker + '_data.csv',index=False)
 ###########################################################################################################################
 
 # if(list(df['int_date'])[-1] - int(list(df['int_date'])[-1]))<0.06:
@@ -144,7 +145,7 @@ plt.style.use('classic')
 fig3 = plt.figure(figsize=[23.5,11.5])
 gs = fig3.add_gridspec(8, 8)
 ax1 = fig3.add_subplot(gs[0:4, 1:-2])
-plt.plot(x,y,label ='Close',color='black',marker='o',alpha=0.6,markersize=2.8)
+plt.plot(x,y,label ='Close',color='black',marker='o',alpha=0.6,markersize=2.2)
 plt.plot(x,y2,label = '50ma',color='dodgerblue',alpha=0.35)
 plt.plot(x,y1,label = '200ma',color='blue',alpha=0.35)
 ax1.fill_between(df_short['index'], df_short['Lower Band'], df_short['Upper Band'], color='grey',alpha=0.1,label='bollinger-'+str(bol_period)+' 1~2 SD')
@@ -188,10 +189,10 @@ ax1 = fig3.add_subplot(gs[4:6, 1:-2])
 x = df_short['index']
 y = 100*(df_short['ma_50']-df_short['ma_200'])/df_short['ma_200']
 y2 = 100*(df_short['Close']-df_short['ma_200'])/df_short['ma_200']
-ax1.plot(x,y2,label='Close/200ma',color='black',marker='o',alpha=0.6,markersize=2.8)
+ax1.plot(x,y2,label='Close/200ma',color='black',marker='o',alpha=0.6,markersize=2.2)
 ax1.plot(x,y,label='50ma/200ma',color='dodgerblue',alpha=0.35)
 ax1.axhline(y=0,label='200ma',color='blue',alpha=0.35,lw=1.2)
-ax1.axhline(y=y2.mean(),label='mean',color='black',alpha=0.25,lw=1.2)
+ax1.axhline(y=y2.mean(),label='mean',color='black',alpha=0.6,lw=1.2)
 x = df_short[df_short.RSI<30]['index']
 y2 = 100*(df_short[df_short.RSI<30]['Close']-df_short[df_short.RSI<30]['ma_200'])/df_short[df_short.RSI<30]['ma_200']
 ax1.scatter(x,y2,color = 'limegreen',s=38,alpha=1,label='RSI buy trigger')
@@ -234,12 +235,12 @@ plt.ylabel('% to 200ma')
 ###########################################################################
 
 ax1 = fig3.add_subplot(gs[6:,1:-2])
-ax1.plot(df_short['index'],df_short.RSI,color = 'black',alpha=0.6,label='RSI '+str(period),marker='o',markersize=2.8)
+ax1.plot(df_short['index'],df_short.RSI,color = 'black',alpha=0.6,label='RSI '+str(period),marker='o',markersize=2.2)
 plt.legend(prop={'size': 10},loc='upper left')
 ax1.scatter(df_short[df_short.RSI<30]['index'],df_short[df_short.RSI<30].RSI,color = 'limegreen',s=38,alpha=1)
 ax1.scatter(df_short[df_short.RSI>70]['index'],df_short[df_short.RSI>70].RSI,color = 'tomato',s=38,alpha=1)
 ax1.axhline(y=70, color='black',linestyle='--')
-ax1.axhline(y=50, color='black')
+ax1.axhline(y=50, color='blue',alpha=0.35,lw=1.2)
 ax1.axhline(y=30, color='black',linestyle='--')
 ymin, ymax = ax1.get_ylim() # get yaxis limits for boxplot below...
 ax1.fill_between(df_short['index'], df_short['RSI'].mean()+df_short['RSI'].std()*2, df_short['RSI'].mean()-df_short['RSI'].std()*2, color='grey',alpha=0.1,label='bollinger-'+str(bol_period)+' 1~2 SD')
@@ -248,6 +249,7 @@ if list(df_short['RSI'])[-1]>df_short['RSI'].mean(): label = '+'+str(round((list
 else: label = str(round((list(df_short['RSI'])[-1]-df_short['RSI'].mean())/df_short['RSI'].std(),2))+' SD'
 plt.annotate( label , (list(df_short['index'])[-1],np.array(df_short['RSI'].mean()+df_short['RSI'].std()*2.1)) , textcoords ="offset points" , xytext=(0,4) , size = 9, ha='center')
 rsi_sd = round((list(df_short['RSI'])[-1]-df_short['RSI'].mean())/df_short['RSI'].std(),2)
+ax1.axhline(y=df_short.RSI.median(),color='black',alpha=0.6,lw=1.2)
 
 ###########################################################################
 
