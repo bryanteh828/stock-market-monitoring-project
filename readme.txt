@@ -1,15 +1,14 @@
-Map of scripts:
+Purpose of the scripts and how to use it.
 
-A - Stock Market Report
+A - Daily Stock Market Report
 
 Summary:
-1 - Outputs 2 results:
-    - stock trend of individual stocks
-    - summary view of 70+ stocks
+1 - Outputs:
+    - Stock analysis of individual stocks
+    - Summary view of 70+ stocks
 2 - Inputs:
-    - Yahoo API on stock prices
-3 - Result are through email
-
+    - Yahoo API on individual stock prices
+3 - Automation: A Windows Scheduler, on my Windows Laptop
 
 Scripts:
 0 - batch_technical_analysis.py		Automates script 1-8.	
@@ -20,18 +19,17 @@ Scripts:
 					save summary analysis to a .csv file.
 3 - email_email.py			Emails .txt and .png file to user.
 4 - email_email_more_processing.py 	Further process the summary .csv file.
-5 - email_more_analysis_2.py		Analyse summary on 70+ stock data into .png.
-6 - email_more_analysis_4.py		Analyse summary on 70+ stock data into .png.
-7 - email_more_analysis_5.py		Analyse summary on 70+ stock data into .png.
+5 - email_more_analysis_2.py		Analyse summary of 70+ stock data into .png.
+6 - email_more_analysis_4.py		Analyse summary of 70+ stock data into .png.
+7 - email_more_analysis_5.py		Analyse summary of 70+ stock data into .png.
 8 - email_email_overall.py		Emails summary of 70+ stock data.
 
 
 B - A Portfolio Tracker
 
-1 - Outputs:
-    - Portfolio's performance in visualized plots/tables
-2 - Input:
-    - a saved .csv file of your stock purchases.
+1 - Outputs: Portfolio's performance in visualized plots/tables
+2 - Input: A record of stock purchase in .csv format.
+3 - Automation: A Windows Scheduleer, on my Windows Laptop
 
 Results are through email
 

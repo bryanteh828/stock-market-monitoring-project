@@ -90,8 +90,9 @@ fig3 = plt.figure(figsize=[23.5,11.5])
 gs = fig3.add_gridspec(8, 9)
 ax1 = fig3.add_subplot(gs[:4, :5])
 color = sns.color_palette("muted")
-index_color = ['pink','grey']
-
+# index_color = ['pink','grey']
+color[len(df_copy.ticker.unique())]=(0.45, 0.45, 0.45)
+color[len(df_copy.ticker.unique())+1]=(0.35, 0.35, 0.35)
 i=0
 for j in df_copy.ticker.unique():
     x = df_copy[df_copy.ticker==j]['index']
@@ -100,13 +101,13 @@ for j in df_copy.ticker.unique():
     plt.plot(x,y,color=color[i],marker='o',label=label,alpha=1,markersize=3)
     i+=1
 plt.axhline(y=0,color='black',alpha=0.4)
-plt.legend(loc='upper left')
+plt.legend(loc='upper left',prop={"size":10.5})
 
 i=0
 for j in df_copy.ticker.unique():
     x = df_copy[df_copy.ticker==j]['index']
     y = df_copy[df_copy.ticker==j]['market']*100
-    plt.plot(x,y,color=color[i],alpha=0.2)
+    plt.plot(x,y,color=color[i],alpha=0.3)
     i+=1
 
 ax1b = ax1.twinx()
@@ -124,8 +125,8 @@ for j in df_copy.ticker.unique():
     plt.plot(x,y,color=color[i],marker='o',label=label,alpha=1,markersize=3)
     x1 = df_copy[df_copy.ticker==j]['index']
     y1 = df_copy[df_copy.ticker==j]['market_RSI']
-    if '.hk' in j: plt.plot(x1,y1,color=index_color[-2],alpha=1)
-    else: plt.plot(x1,y1,color=index_color[-1],alpha=1)
+    if '.hk' in j: plt.plot(x1,y1,color=color[6],alpha=1,linewidth=2.5)
+    else: plt.plot(x1,y1,color=color[7],alpha=1,linewidth=2.5)
     i+=1
 plt.axhline(y=50,color='black',alpha=0.4)
 ax1b = ax1.twinx()
@@ -149,8 +150,8 @@ df_copy_long_temp = pd.concat([df_copy_long_temp,temp])
 ax1 = fig3.add_subplot(gs[4:6, 5:])
 x = 'name'
 y = 'RSI'
-sns.boxplot(x=x,y=y,data=df_copy_long_temp,boxprops=dict(alpha=.8),palette="muted")
-plt.axhline(y=50,color='black',alpha=0.2)
+sns.boxplot(x=x,y=y,data=df_copy_long_temp,palette=color)
+plt.axhline(y=50,color='black',alpha=0.4,linewidth=2.5)
 
 j=0
 for i in df_copy_long_temp.ticker.unique():
@@ -179,8 +180,8 @@ for j in df_copy.ticker.unique():
     y = 100*(df_copy[df_copy.ticker==j]['Close'] - df_copy[df_copy.ticker==j]['ma_200'])/df_copy[df_copy.ticker==j]['ma_200']
     y2 = 100*(df_copy[df_copy.ticker==j]['market_price'] - df_copy[df_copy.ticker==j]['market_ma_200'])/df_copy[df_copy.ticker==j]['market_ma_200']
     plt.plot(x,y,color=color[i],marker='o',label=j,alpha=1,markersize=3)
-    if '.hk' in j: plt.plot(x,y2,color=index_color[-2],label=j+' control',alpha=.8)
-    else: plt.plot(x,y2,color=index_color[-1],label=j+' control',alpha=.8)
+    if '.hk' in j: plt.plot(x,y2,color=color[6],label=j+' control',alpha=.8,linewidth=2.5)
+    else: plt.plot(x,y2,color=color[7],label=j+' control',alpha=.8,linewidth=2.5)
     i+=1
 plt.axhline(y=0,color='black',alpha=0.4)
 ax1b = ax1.twinx()
@@ -194,8 +195,8 @@ df_copy_long_temp['trend_gap'] = 100*(df_copy_long_temp['Close'] - df_copy_long_
 df_copy_long['trend_gap'] = 100*(df_copy_long['Close'] - df_copy_long['ma_200'])/df_copy_long['ma_200']
 x = 'name'
 y = 'trend_gap'
-sns.boxplot(x=x,y=y,data=df_copy_long_temp,boxprops=dict(alpha=.8),palette="muted")
-plt.axhline(y=0,color='black',alpha=0.4)
+sns.boxplot(x=x,y=y,data=df_copy_long_temp,palette=color)
+plt.axhline(y=0,color='black',alpha=0.4,linewidth=2.5)
 
 j=0
 for i in df_copy_long_temp.ticker.unique():
@@ -266,7 +267,7 @@ ax1 = fig3.add_subplot(gs[2:4, 5:])
 
 df_temp = df[['cost_sgd','market_value','name']]
 df_temp.columns = ['Cost','Value','name']
-df_temp.set_index('name').T.plot(kind='barh', stacked=True,ax=ax1,legend=False)
+df_temp.set_index('name').T.plot(kind='barh', stacked=True,ax=ax1,legend=False,color=color)
 
 #annotate individual purchase price
 sum_of_x=0

@@ -192,7 +192,8 @@ y2 = 100*(df_short['Close']-df_short['ma_200'])/df_short['ma_200']
 ax1.plot(x,y2,label='Close/200ma',color='black',marker='o',alpha=0.6,markersize=2.2)
 ax1.plot(x,y,label='50ma/200ma',color='dodgerblue',alpha=0.35)
 ax1.axhline(y=0,label='200ma',color='blue',alpha=0.35,lw=1.2)
-ax1.axhline(y=y2.mean(),label='mean',color='black',alpha=0.6,lw=1.2)
+ax1.axhline(y=y2.median(),label='mean',color='black',alpha=0.6,lw=1.2)
+trend_median = y2.median()
 x = df_short[df_short.RSI<30]['index']
 y2 = 100*(df_short[df_short.RSI<30]['Close']-df_short[df_short.RSI<30]['ma_200'])/df_short[df_short.RSI<30]['ma_200']
 ax1.scatter(x,y2,color = 'limegreen',s=38,alpha=1,label='RSI buy trigger')
@@ -250,6 +251,7 @@ else: label = str(round((list(df_short['RSI'])[-1]-df_short['RSI'].mean())/df_sh
 plt.annotate( label , (list(df_short['index'])[-1],np.array(df_short['RSI'].mean()+df_short['RSI'].std()*2.1)) , textcoords ="offset points" , xytext=(0,4) , size = 9, ha='center')
 rsi_sd = round((list(df_short['RSI'])[-1]-df_short['RSI'].mean())/df_short['RSI'].std(),2)
 ax1.axhline(y=df_short.RSI.median(),color='black',alpha=0.6,lw=1.2)
+median_rsi = df_short.RSI.median() 
 
 ###########################################################################
 
@@ -298,7 +300,8 @@ y = 100*(df_short2['ma_50']-df_short2['ma_200'])/df_short2['ma_200']
 y2 = 100*(df_short2['Close']-df_short2['ma_200'])/df_short2['ma_200']
 ax1.plot(x,y2,label='Close/200ma',color='black',marker='o',alpha=0.6,markersize=2.8)
 ax1.plot(x,y,label='50ma/200ma',color='dodgerblue',alpha=0.35)
-ax1.axhline(y=0,label='200ma',color='blue',alpha=0.35,marker='o',markersize=4,lw=2.5)
+ax1.axhline(y=0,label='200ma',color='blue',alpha=0.35,marker='o',markersize=4,lw=1.2)
+ax1.axhline(y=trend_median,label='200ma',color='black',alpha=0.35,marker='o',markersize=4,lw=1.2)
 ax1.xaxis.set_major_formatter(mdates.DateFormatter('%m.%d'))
 y1 = [0]*len(df_short2)
 y2 =100*(df_short2['Close']-df_short2['ma_200'])/df_short2['ma_200']
@@ -348,8 +351,10 @@ plt.legend(prop={'size': 10},loc='best')
 ax1.scatter(df_short2[df_short2.RSI<30]['index'],df_short2[df_short2.RSI<30].RSI,color = 'lightgreen',s=38)
 ax1.scatter(df_short2[df_short2.RSI>70]['index'],df_short2[df_short2.RSI>70].RSI,color = 'tomato',s=38)
 ax1.axhline(y=70, color='black',linestyle='--')
-ax1.axhline(y=50, color='black')
+ax1.axhline(y=50, color='blue',linewidth=1.2,alpha=0.35)
 ax1.axhline(y=30, color='black',linestyle='--')
+ax1.axhline(y=median_rsi,color='black',alpha=0.35,marker='o',markersize=4,lw=1.2)
+
 y1= [50]*len(df_short2)
 y2=df_short2['RSI']
 x=df_short2['index']
