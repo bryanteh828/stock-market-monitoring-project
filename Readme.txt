@@ -1,7 +1,7 @@
 How this is used:
 
 multiple scripts >>
-	>> Track portfolio - script 2c.
+	>> Track portfolio - script 2a, 2b, 3a, 3b, 3c
 	>> Track a list of Stocks (not necessarily stocks you have bought) - script 3a.
 
 single script >>
