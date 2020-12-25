@@ -9,15 +9,21 @@ import matplotlib.ticker as mtick
 import seaborn as sns ; sns.set()
 
 pull_data = False
-
-os.chdir(r'/Users/tehyuqi/dropbox')
-isMac = 1
+input_dir = r'/Users/tehyuqi/dropbox'
+output_dir = r'/Users/tehyuqi/dropbox'
 
 #Tickers
+os.chdir(input_dir)
 temp = pd.read_csv('tickers.csv')
+#['macb', 'country', 'name', 'industry', 'ticker', 'watchlist',
+#       'financial_year', 'last_date_analysis', 'last_date_email', 'file']
 
 #Purchases
 df = pd.read_csv('transactions.csv')
+#['name', 'ticker', 'purchase_date', 'stockprice', 'stocks', 'cost',
+#'unitcost', 'cost_sgd', 'duration', 'appreciation', 'price',
+#'lastday_price', 'market_value']
+df
 try: 
     df['purchase_date'] = df['purchase_date'].apply(lambda x: datetime.strptime(x, '%Y-%m-%d'))
 except:
@@ -367,6 +373,6 @@ plt.axis('off')
 
 plt.tight_layout()
 # plt.show()
-os.chdir(r'/Users/tehyuqi/dropbox')
+os.chdir(output_dir)
 plt.savefig('portfolio.png')
 #################################################################################
