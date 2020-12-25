@@ -1,3 +1,10 @@
+How this is used:
+
+>> Track portfolio - script 2c.
+>> Stock Prices dashboard - script 3a.
+
+scripts description below:
+
 1. pull_price >> pull stock prices with an input of a stock ticker
 	
 	a. price_pull.py >> extracts stock prices with an input of a stock ticker & output stock prices as .csv 
