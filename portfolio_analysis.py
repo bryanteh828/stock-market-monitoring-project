@@ -12,18 +12,34 @@ pull_data = False
 input_dir = r'/Users/tehyuqi/dropbox'
 output_dir = r'/Users/tehyuqi/dropbox'
 
+"""
+OUTPUT is DASHBOARD of PORTFOLIO
+TWO INPUTS needed (1)ticker + stock name; (2)transaction records
+
+(1)sample
+country	name	industry	ticker
+us	thetradedesk	tech	ttd
+us	uber	tech	uber
+us	equinix	tech	eqix
+us	oracle	tech	orcl
+us	paypal	tech	pypl
+
+(2)sample
+name	ticker	purchase_date	stockprice	stocks	cost	unitcost	cost_sgd	price	duration	appreciation	lastday_price	market_value
+adobe	adbe	14/7/20	438.3407407	27	11835.2	438.3407407	16574.01408		163	13.7	498.5400085	18849.62621
+alibaba	baba	4/8/20	240.3313253	83	19947.5	244.2491959	27868.35142		141.5	-7.4	221.7098999	25816.61929
+costco	cost	9/6/20	309.2359375	32	9895.55	309.2359375	13783.86783		198	17.2	362.5499878	16160.20665
+"""
+
 #Tickers
 os.chdir(input_dir)
 temp = pd.read_csv('tickers.csv')
-#['macb', 'country', 'name', 'industry', 'ticker', 'watchlist',
-#       'financial_year', 'last_date_analysis', 'last_date_email', 'file']
 
 #Purchases
 df = pd.read_csv('transactions.csv')
-#['name', 'ticker', 'purchase_date', 'stockprice', 'stocks', 'cost',
-#'unitcost', 'cost_sgd', 'duration', 'appreciation', 'price',
-#'lastday_price', 'market_value']
-df
+#sample
+
+
 try: 
     df['purchase_date'] = df['purchase_date'].apply(lambda x: datetime.strptime(x, '%Y-%m-%d'))
 except:
@@ -51,7 +67,6 @@ df = df.groupby(['name','ticker']).agg({
     'stocks':'sum',
     'cost':'sum',
     'unitcost':'mean',
-    'cost_sgd':'sum',
     'duration':'mean',
     'appreciation':'mean',
     'price':'mean',
@@ -60,7 +75,7 @@ df = df.groupby(['name','ticker']).agg({
     }).reset_index()
 
 df['stockprice']=df['cost'].div(df['stocks'])
-df['appreciation']=df['market_value'].div(df['cost_sgd']).sub(1).mul(100).round(1)
+# df['appreciation']=df['market_value'].div(df['cost']).sub(1).mul(100).round(1)
 df.purchase_date = pd.to_datetime(df.purchase_date)
 
 #Prices of position
@@ -123,6 +138,14 @@ first_price = {}
 for k in df.ticker.unique():
     first_price[k] = df[df.ticker==k].unitcost.values[0]
 
+last_price = {}
+for k in df.ticker.unique():
+    last_price[k] = df_copy_long[df_copy_long.ticker==k].Close.values[-1]
+
+df['lastday_price'] = df['ticker'].apply(lambda x: last_price[x]) 
+df['market_value'] = df['lastday_price'].mul(df['stocks'])
+df['appreciation'] = df['lastday_price'].sub(df['stockprice']).div(df['stockprice']).mul(100).round(1)
+df['duration'] = (datetime.now() - df['purchase_date']).apply(lambda x: x.days)
 #purchase date
 #total
 purchase_date = {}
@@ -145,7 +168,7 @@ total['rate'] = total['Close'].div(total['first_price'])
 total['cost'] = total['first_price'].mul(total['stocks']).mul(1.35)
 
 #plot
-fig3 = plt.figure(figsize=[18,10])
+fig3 = plt.figure(figsize=[18,8])
 gs = fig3.add_gridspec(8, 9)
 
 # add colour
@@ -155,20 +178,23 @@ color.append((0.6, 0.6, 0.6))
 
 #portfolio
 ax1 = fig3.add_subplot(gs[:4, :5])
+plt.xticks(rotation=0)
 summary = total.groupby('index').agg({'value':sum,'cost':sum})
 summary['perc'] = summary['value'].div(summary['cost']).sub(1).mul(100).rolling(5).mean()
-summary[['value','cost']].plot(ax=ax1,alpha=0.75,linewidth=2.1)
+summary[['value','cost']].plot(ax=ax1,alpha=0.75,linewidth=2.1,rot=0)
 ax1b = ax1.twinx()
-summary[['perc']].plot(ax=ax1b,color='grey',alpha=0.5,linewidth=2.1)
+summary[['perc']].plot(ax=ax1b,color='grey',alpha=0.5,linewidth=2.1,rot=0)
 
-ax1.axes.set_yticklabels([str(int(i/1000))+'K' for i in ax1.axes.get_yticks()])
+# ax1.axes.set_yticklabels([str(int(i/1000))+'K' for i in ax1.axes.get_yticks()])
 ax1.grid(b=None)
 ax1b.grid(b=None)
 ax1b.yaxis.set_major_formatter(mtick.PercentFormatter())
 plt.legend([])
+plt.title('Portfolio >>',loc='left',fontweight='bold')
 
 #individual stock
 ax1 = fig3.add_subplot(gs[4:, :5])
+plt.title('Individual Stocks >>',loc='left',fontweight='bold')
 i=0
 for j in df_copy.ticker.unique():
     x = df_copy[df_copy.ticker==j]['index']
@@ -182,6 +208,7 @@ for j in df_copy.ticker.unique():
     i+=1
 plt.axhline(y=0,color='black',alpha=0.4)
 plt.legend(loc='upper left',prop={"size":11.5})
+
 
 i=0
 for j in df_copy.ticker.unique():
@@ -220,8 +247,9 @@ for i in ['^hsi','^gspc']:
     last_day = list(df_copy_long_temp[df_copy_long_temp['ticker']==i]['RSI'])[-1]
     market_rsi_sd.append(round((last_day-mean)/std,1))
 
-#4 - compare stock, index Trend timeline as baseline comparison
+#Trend
 ax1 = fig3.add_subplot(gs[4:, 5:])
+plt.title('Stock Trend >>',loc='left',fontweight='bold')
 i=0
 for j in df_copy.ticker.unique():
     x = df_copy[df_copy.ticker==j]['index']
@@ -237,6 +265,8 @@ ax1b.set_ylim(tuple(np.array([ax1.get_ylim()[0],ax1.get_ylim()[1]])))
 ax1.yaxis.set_major_formatter(mtick.PercentFormatter())
 ax1b.yaxis.set_major_formatter(mtick.PercentFormatter())
 ax1.axes.get_yaxis().set_ticks([])
+ax1.grid(b=None)
+ax1b.grid(b=None)
 
 df_copy_long_temp['trend_gap'] = 100*(df_copy_long_temp['Close'] - df_copy_long_temp['ma_200'])/df_copy_long_temp['ma_200']
 df_copy_long['trend_gap'] = 100*(df_copy_long['Close'] - df_copy_long['ma_200'])/df_copy_long['ma_200']
@@ -250,7 +280,7 @@ for i in ['^hsi','^gspc']:
     last_day = list(df_copy_long_temp[df_copy_long_temp['ticker']==i]['trend_gap'])[-1]
     market_trend_sd.append(round((last_day-mean)/std,1))
 
-#6 - Portfolio Table
+#Table
 market_beat = []
 rsi = []
 trend = []
@@ -275,7 +305,7 @@ for i in df_copy.ticker.unique():
     trend_sd.append(round((last_day-mean)/std,1))                             
 
 df_plot_table =df.loc[df['price'].isnull()][['ticker','name','unitcost','duration','appreciation',\
-                   'cost_sgd','lastday_price','market_value']]
+                   'cost','lastday_price','market_value']]
     
 df_plot_table['name'] = df_copy.ticker.unique()
 df_plot_table['market +/-'] = market_beat
@@ -291,7 +321,7 @@ df_plot_table['market trend STD'] = df_plot_table.apply(lambda x: market_trend_s
                                                         '.hk' in x['ticker'] else \
                                                         market_trend_sd[1],axis=1)
 df_plot_table['appreciation'] = df_plot_table['appreciation'].apply(lambda x: str(x)+'%')
-df_plot_table['cost_sgd'] = df_plot_table['cost_sgd'].apply(lambda x: int(x))
+df_plot_table['cost'] = df_plot_table['cost'].apply(lambda x: int(x))
 df_plot_table['market_value'] = df_plot_table['market_value'].apply(lambda x: int(x))
 
 for i in ['unitcost','lastday_price']:
@@ -308,15 +338,15 @@ plot_table = plot_table.sort_values('Total Profit',ascending = False)
     
 ax1 = fig3.add_subplot(gs[:2,5:])
 table =ax1.table(cellText=plot_table.values, colLabels=plot_table.columns, \
-                 loc='center left',colWidths=[(0.018*len(plot_table[x].astype(str).max()))\
-                 if (0.018*len(plot_table[x].astype(str).max())) > 0.11 else 0.11 \
+                 loc='upper left',colWidths=[(0.018*len(plot_table[x].astype(str).max()))\
+                 if (0.018*len(plot_table[x].astype(str).max())) > 0.13 else 0.13 \
                  for x in plot_table.columns])
 
 cellDict = table.get_celld()
 for i in range(0,len(plot_table.columns)):
-    cellDict[(0,i)].set_height(.12)
+    cellDict[(0,i)].set_height(.18)
     for j in range(1,len(plot_table.values)+1):
-        cellDict[(j,i)].set_height(.11)
+        cellDict[(j,i)].set_height(.165)
 
 for j in range(0,len(plot_table)):
     # table[(j+1,0)].set_facecolor(color[j])
@@ -333,7 +363,7 @@ for j in range(0,len(plot_table)):
 
         
 table.auto_set_font_size(False)
-table.set_fontsize(12.5)
+table.set_fontsize(10.5)
 plt.axis('off')
 
 #Tables
@@ -342,15 +372,15 @@ ax1 = fig3.add_subplot(gs[2:4, 5:])
 plot_table = df_plot_table[['Name', 'Trend','Trend sd',\
                             'RSI', 'RSI sd','M Trend sd','M RSI sd']]
 table =ax1.table(cellText=plot_table.values, colLabels=plot_table.columns, \
-                 loc='center left',colWidths=[(0.018*len(plot_table[x].astype(str).max()))\
-                 if (0.018*len(plot_table[x].astype(str).max())) > 0.11 else 0.11 \
+                 loc='upper left',colWidths=[(0.018*len(plot_table[x].astype(str).max()))\
+                 if (0.018*len(plot_table[x].astype(str).max())) > 0.13 else 0.13 \
                  for x in plot_table.columns])
 
 cellDict = table.get_celld()
 for i in range(0,len(plot_table.columns)):
-    cellDict[(0,i)].set_height(.12)
+    cellDict[(0,i)].set_height(.18)
     for j in range(1,len(plot_table.values)+1):
-        cellDict[(j,i)].set_height(.11)               
+        cellDict[(j,i)].set_height(.165)               
         
 for j in range(len(plot_table)):
     for i in range(2,len(plot_table.columns)):
@@ -368,11 +398,13 @@ for j in range(len(plot_table)):
     table[(j+1,1)]._loc = 'center'
 
 table.auto_set_font_size(False)
-table.set_fontsize(12.5)
+table.set_fontsize(10.5)
 plt.axis('off')
 
 plt.tight_layout()
-# plt.show()
+plt.show()
+
+
 os.chdir(output_dir)
 plt.savefig('portfolio.png')
 #################################################################################
