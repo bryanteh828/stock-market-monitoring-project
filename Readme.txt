@@ -2,8 +2,9 @@ How this is used:
 
 >> Track portfolio - script 2c.
 >> Track a list of Stocks (not necessarily stocks you have bought) - script 3a.
->> Pull a stock's price - script 1a
->> Pull a stock's balance sheet - script 3a
+
+>> Pull a stock's price - script 2a
+>> Pull a stock's balance sheet - script 1a
 
 scripts description below:
 
