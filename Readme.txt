@@ -5,13 +5,13 @@ How this is used:
 
 scripts description below:
 
-1. pull_price >> pull stock prices with an input of a stock ticker
+1. pull_price >> pulls stock prices with an input of a stock ticker
 	
-	a. price_pull.py >> extracts stock prices with an input of a stock ticker & output stock prices as .csv 
-	b. price_anlys.py >> input stock prices as .csv & output dashboard.
+	a. price_pull.py >> input of stock ticker & pull stock price via API & output stock prices as .csv (need to configure directory of output file in script)
+	b. price_anlys.py >> input stock prices as .csv & build dashboard
 
 2. tracker_portfolio >> builds a dashboard to show portfolio health
 
-	a. portfolio_analysis.py >> input price purchases, utilizes "pull_price" scripts * output dashboard as .png
+	a. portfolio_analysis.py >> input price purchases, utilizes script 1a, 1b & output dashboard as .png
 	b. portfolio_email.py >> input dashboard as .png & send email
 	c. batch-script.py >> automates script 2a, 2b, 1a, 1b.
