@@ -8,9 +8,12 @@ import matplotlib.pyplot as plt ; plt.style.use('ggplot')
 import matplotlib.ticker as mtick
 import seaborn as sns ; sns.set()
 
-pull_data = False
+pull_data = True
 input_dir = r'/Users/tehyuqi/dropbox'
 output_dir = r'/Users/tehyuqi/dropbox'
+script_dir = r'/Users/tehyuqi/dropbox/pull_price'
+raw_dir = r'/Users/tehyuqi/stockdata'
+forex=1.35
 
 """
 OUTPUT is DASHBOARD of PORTFOLIO
@@ -53,7 +56,7 @@ if pull_data == True:
         print('pulling',ticker,'...')
         for script in scripts_needed:
             try: 
-                os.system(r'python3 ' + script +' '+ticker)
+                os.system(r'python3 ' + script_dir +'/'+ script +' '+ticker)
             except: 
                 sys.exit('Script error')
 
@@ -90,7 +93,7 @@ for current_ticker in df.ticker.unique():
     print(current_ticker,current_purchase_date.date())   
 
     #get data
-    os.chdir(r'/Users/tehyuqi/stockdata')
+    os.chdir(raw_dir)
     df2 = pd.read_csv(current_ticker + '_data.csv')
     df2['index'] = df2['index'].apply(lambda x: datetime.strptime(x, '%Y-%m-%d'))
     
@@ -162,13 +165,13 @@ for i in df.ticker.unique():
     total = pd.concat([total,target])
     
 total = total.merge(df[['ticker','stocks']],how='left',left_on='ticker',right_on='ticker')
-total['value'] = total['Close'].mul(total['stocks']).mul(1.35)
+total['value'] = total['Close'].mul(total['stocks']).mul(forex)
 total['first_price'] = total.ticker.apply(lambda x: first_price[x])
 total['rate'] = total['Close'].div(total['first_price']) 
-total['cost'] = total['first_price'].mul(total['stocks']).mul(1.35)
+total['cost'] = total['first_price'].mul(total['stocks']).mul(forex)
 
 #plot
-fig3 = plt.figure(figsize=[18,8])
+fig3 = plt.figure(figsize=[16,8])
 gs = fig3.add_gridspec(8, 9)
 
 # add colour
@@ -402,8 +405,7 @@ table.set_fontsize(10.5)
 plt.axis('off')
 
 plt.tight_layout()
-plt.show()
-
+# plt.show()
 
 os.chdir(output_dir)
 plt.savefig('portfolio.png')
