@@ -1,7 +1,7 @@
 How this is used:
 
 >> Track portfolio - script 2c.
->> Stock Prices dashboard - script 3a.
+>> Track a list of Stocks - script 3a.
 
 scripts description below:
 
