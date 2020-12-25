@@ -7,7 +7,8 @@ scripts description below:
 
 1. pull_price >> pulls stock prices with an input of a stock ticker
 	
-	a. price_pull.py >> input of stock ticker & pull stock price via API & output stock prices as .csv (need to configure directory of output file in script)
+	a. price_pull.py >> input of stock ticker & pull stock price via API & output stock prices as .csv 
+						(also need to configure directory of output file in script)
 	b. price_anlys.py >> input stock prices as .csv & build dashboard
 
 2. tracker_portfolio >> builds a dashboard to show portfolio health
