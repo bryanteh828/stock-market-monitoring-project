@@ -2,8 +2,8 @@
 How to use:
 
 multiple scripts >>
-	>> Track watchlist - script 1a-b, 2a-b, 4a-d *sequence in batch-script.py
-	>> Track portfolio - script 1a-b, 2a-b, 3a-c *sequence in batch-script.py
+	>> Track watchlist - script 1a-b, 2a-b, 4a-d *sequence in batch-script.py (4d)
+	>> Track portfolio - script 1a-b, 2a-b, 3a-c *sequence in batch-script.py (3c)
 	>> Track a list of Stocks (not necessarily stocks you have bought) - script 3a.
 
 single script >>
